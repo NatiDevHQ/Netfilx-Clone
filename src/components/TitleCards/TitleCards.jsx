@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import "./TitleCards.css";
-import cards_data from "../../assets/cards/Cards_data";
 
 const TitleCards = ({ title, category }) => {
   const [apiData, setApiData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const cardsRef = useRef();
 
   const options = {
@@ -15,12 +17,17 @@ const TitleCards = ({ title, category }) => {
     },
   };
 
-  const handlewheel = (event) => {
+  const handleWheel = (event) => {
     event.preventDefault();
-    cardsRef.current.scrollLeft += event.deltaY;
+    if (cardsRef.current) {
+      cardsRef.current.scrollLeft += event.deltaY;
+    }
   };
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
+
     fetch(
       `https://api.themoviedb.org/3/movie/${
         category ? category : "now_playing"
@@ -28,36 +35,56 @@ const TitleCards = ({ title, category }) => {
       options
     )
       .then((res) => res.json())
-      .then((res) => setApiData(res.results))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (res.results) {
+          setApiData(res.results);
+        } else {
+          setError("No results found.");
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Failed to load data.");
+        setLoading(false);
+      });
 
-    if (cardsRef.current) {
-      cardsRef.current.addEventListener("wheel", handlewheel);
+    const currentRef = cardsRef.current;
+    if (currentRef) {
+      currentRef.addEventListener("wheel", handleWheel);
     }
 
-    // Cleanup function to remove event listener
     return () => {
-      if (cardsRef.current) {
-        cardsRef.current.removeEventListener("wheel", handlewheel);
+      if (currentRef) {
+        currentRef.removeEventListener("wheel", handleWheel);
       }
     };
-  }, []);
+  }, [category]);
 
   return (
     <div className="title-cards">
       <h2>{title ? title : "Popular on Netflix"}</h2>
+
+      {loading && <p className="loading">Loading...</p>}
+      {error && <p className="error">{error}</p>}
+
       <div className="card-list" ref={cardsRef}>
-        {apiData.map((card, index) => {
-          return (
-            <div className="card" key={index}>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${card.backdrop_path}`}
-                alt={card.original_title || "Movie image"} // Fixed typo and added alt text fallback
-              />
-              <p>{card.original_title}</p> {/* Fixed: corrected the typo */}
-            </div>
-          );
-        })}
+        {!loading &&
+          !error &&
+          apiData.map((card, index) => (
+            <Link to={`/player/${card.id}`} className="card" key={index}>
+              {card.backdrop_path ? (
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${card.backdrop_path}`}
+                  alt={card.original_title || "Movie image"}
+                  title={card.original_title}
+                />
+              ) : (
+                <div className="fallback-img">No Image</div>
+              )}
+              <p>{card.original_title || card.title}</p>
+            </Link>
+          ))}
       </div>
     </div>
   );
