@@ -1,7 +1,7 @@
 
 ---
 
-# 🎬 Netflix Clone — React + TMDB API
+# 🎬 Netflix Clone — React + TMDB API + Firebase
 
 A **modern, responsive Netflix-inspired web application** built with **React** and powered by **The Movie Database (TMDB)** API. Enjoy a sleek, immersive experience featuring trending movies, detailed previews, and a minimalist design that mirrors the feel of the real Netflix platform.
 
@@ -124,12 +124,7 @@ Add your API key as an environment variable when deploying.
 ---
 
 👤 Author
-
-Your Name
-🌐 Portfolio
-🐱 GitHub
-💼 LinkedIn
-
+Natnael Getachew 
 
 ---
 
