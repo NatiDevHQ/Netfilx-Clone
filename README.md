@@ -149,11 +149,4 @@ Netflix for UI inspiration
 
 ---
 
-### ✅ Optional Enhancements You Can Add:
-- **Dark mode toggle**
-- **Hover previews**
-- **Firebase Auth (Login/Signup)**
-- **Search functionality**
-
-Would you like help setting up any of those features or writing the `tmdb.js` API helper and `vite.config.js` for deployment next?
 
