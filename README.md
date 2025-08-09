@@ -1,4 +1,4 @@
-
+finished
 ---
 
 # 🎬 Netflix Clone — React + TMDB API + Firebase
